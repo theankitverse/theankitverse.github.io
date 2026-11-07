@@ -42,14 +42,21 @@
     : "daydreamin://" + path;
   document.getElementById("open").href = target;
 
-  var left = false;
-  function gone() { left = true; }
-  window.addEventListener("blur", gone);
-  window.addEventListener("pagehide", gone);
-  document.addEventListener("visibilitychange", function () { if (document.hidden) gone(); });
-  location.href = target;
-  // Nothing took the link: this device doesn't have the app.
-  setTimeout(function () { if (!left && !document.hidden) location.replace(download); }, 1800);
+  // Tried once the page can be seen: a page opened in a background tab waits its turn.
+  var left = false, started = false;
+  function attempt() {
+    if (started || document.hidden) return;
+    started = true;
+    function gone() { left = true; }
+    window.addEventListener("blur", gone);
+    window.addEventListener("pagehide", gone);
+    document.addEventListener("visibilitychange", function () { if (document.hidden) gone(); });
+    location.href = target;
+    // Nothing took the link: this device doesn't have the app.
+    setTimeout(function () { if (!left) location.replace(download); }, 1800);
+  }
+  document.addEventListener("visibilitychange", attempt);
+  attempt();
 </script>
 </body>
 </html>
