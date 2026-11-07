@@ -33,7 +33,8 @@
   var download = "https://github.com/theankitverse/daydreamin-android#-download";
   var params = new URLSearchParams(location.search);
   var v = params.get("v"), q = params.get("q");
-  var query = v && /^[A-Za-z0-9_-]{11}$/.test(v) ? "v=" + v : q ? "q=" + encodeURIComponent(q.slice(0, 200)) : "";
+  function name(key) { var value = params.get(key); return value ? "&" + key + "=" + encodeURIComponent(value.slice(0, 120)) : ""; }
+  var query = v && /^[A-Za-z0-9_-]{11}$/.test(v) ? "v=" + v + name("t") + name("a") : q ? "q=" + encodeURIComponent(q.slice(0, 200)) : "";
   var path = "song" + (query ? "?" + query : "");
   var android = /Android/i.test(navigator.userAgent);
   var target = android
